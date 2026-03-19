@@ -30,7 +30,7 @@ export async function onRequestGet(context) {
 
     const items = [...xmlText.matchAll(/<item>([\s\S]*?)<\/item>/g)]
       .slice(0, 6)
-      .map((match) => {
+       .map((match) => {
         const itemXml = match[1];
 
         const getTag = (tag) => {
@@ -55,6 +55,8 @@ export async function onRequestGet(context) {
           enclosureMatch?.[1] ||
           descriptionImgMatch?.[1] ||
           null;
+
+        console.log("RAW ITEM XML:", itemXml);
 
         return {
           title: getTag("title"),
