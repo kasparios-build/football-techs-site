@@ -18,9 +18,10 @@ function renderNews(containerId, articles) {
     div.className = "card";
 
     const fallbackImages = [
-      "https://images.unsplash.com/photo-1566577739112-5180d4bf9390",
-      "https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a",
-      "https://images.unsplash.com/photo-1508098682722-e99c43a406b2"
+      "https://picsum.photos/seed/football1/600/300",
+      "https://picsum.photos/seed/football2/600/300",
+      "https://picsum.photos/seed/football3/600/300",
+      "https://picsum.photos/seed/football4/600/300"
     ];
     
     const randomImage = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
