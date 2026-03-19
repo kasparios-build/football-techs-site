@@ -18,6 +18,8 @@ function renderNews(containerId, articles) {
     div.className = "card";
 
     div.innerHTML = `
+      ${article.image ? `<img src="${article.image}" style="width:100%; height:140px; object-fit:cover; border-radius:10px; margin-bottom:12px;" />` : ""}
+    
       <h3>${article.title}</h3>
       <p>${article.pubDate}</p>
       <a href="${article.link}" target="_blank" rel="noopener noreferrer" style="color:#22c55e;">Read more</a>
