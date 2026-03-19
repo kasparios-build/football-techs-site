@@ -1,5 +1,5 @@
 async function fetchNews(feedUrl) {
-  const api = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+  const api = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`;
 
   const res = await fetch(api);
   const data = await res.json();
