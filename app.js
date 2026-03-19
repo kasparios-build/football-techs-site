@@ -17,8 +17,16 @@ function renderNews(containerId, articles) {
     const div = document.createElement("div");
     div.className = "card";
 
+    const fallbackImages = [
+      "https://images.unsplash.com/photo-1566577739112-5180d4bf9390",
+      "https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a",
+      "https://images.unsplash.com/photo-1508098682722-e99c43a406b2"
+    ];
+    
+    const randomImage = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+    
     div.innerHTML = `
-      <img src="${article.image || 'https://images.unsplash.com/photo-1517649763962-0c623066013b'}"
+      <img src="${article.image || randomImage}"
            style="width:100%; height:140px; object-fit:cover; border-radius:10px; margin-bottom:12px;" />
     
       <h3>${article.title}</h3>
