@@ -38,10 +38,14 @@ export async function onRequestGet(context) {
           return m ? (m[1] || m[2] || "").trim() : "";
         };
 
+        const imageMatch = itemXml.match(/<media:content.*?url="(.*?)"/);
+        const enclosureMatch = itemXml.match(/<enclosure.*?url="(.*?)"/);
+        
         return {
           title: getTag("title"),
           link: getTag("link"),
-          pubDate: getTag("pubDate")
+          pubDate: getTag("pubDate"),
+          image: imageMatch?.[1] || enclosureMatch?.[1] || null
         };
       });
 
