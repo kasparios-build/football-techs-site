@@ -28,29 +28,43 @@ export async function onRequestGet(context) {
 
     const xmlText = await feedResponse.text();
 
-    console.log(xmlText.slice(0, 3000));
     const items = [...xmlText.matchAll(/<item>([\s\S]*?)<\/item>/g)]
       .slice(0, 6)
-      .map(match => {
+      .map((match) => {
         const itemXml = match[1];
 
         const getTag = (tag) => {
-          const m = itemXml.match(new RegExp(`<${tag}><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/${tag}>|<${tag}>([\\s\\S]*?)<\\/${tag}>`));
+          const m = itemXml.match(
+            new RegExp(
+              `<${tag}><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/${tag}>|<${tag}>([\\s\\S]*?)<\\/${tag}>`
+            )
+          );
           return m ? (m[1] || m[2] || "").trim() : "";
         };
 
-        const imageMatch = itemXml.match(/<media:content.*?url="(.*?)"/);
-        const enclosureMatch = itemXml.match(/<enclosure.*?url="(.*?)"/);
-        
+        const description = getTag("description");
+
+        const mediaContentMatch = itemXml.match(/<media:content[^>]*url="([^"]+)"/i);
+        const mediaThumbnailMatch = itemXml.match(/<media:thumbnail[^>]*url="([^"]+)"/i);
+        const enclosureMatch = itemXml.match(/<enclosure[^>]*url="([^"]+)"/i);
+        const descriptionImgMatch = description.match(/<img[^>]+src="([^"]+)"/i);
+
+        const image =
+          mediaContentMatch?.[1] ||
+          mediaThumbnailMatch?.[1] ||
+          enclosureMatch?.[1] ||
+          descriptionImgMatch?.[1] ||
+          null;
+
         return {
           title: getTag("title"),
           link: getTag("link"),
           pubDate: getTag("pubDate"),
-          image: imageMatch?.[1] || enclosureMatch?.[1] || null
+          image
         };
       });
 
-    return new Response(JSON.stringify({ items }), {
+    return new Response(JSON.stringify({ items }, null, 2), {
       headers: {
         "Content-Type": "application/json",
         "Cache-Control": "public, max-age=900"
