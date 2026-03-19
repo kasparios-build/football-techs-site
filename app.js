@@ -1,19 +1,12 @@
-async function fetchNews(feedUrl) {
-  const api = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`;
-
-  const res = await fetch(api);
+async function fetchNews(type) {
+  const res = await fetch(`/api/news?type=${type}`);
   const data = await res.json();
 
-  const parser = new DOMParser();
-  const xml = parser.parseFromString(data.contents, "text/xml");
+  if (!data.items) {
+    throw new Error(data.error || "No news items returned");
+  }
 
-  const items = [...xml.querySelectorAll("item")].slice(0, 6);
-
-  return items.map(item => ({
-    title: item.querySelector("title").textContent,
-    link: item.querySelector("link").textContent,
-    pubDate: item.querySelector("pubDate").textContent
-  }));
+  return data.items;
 }
 
 function renderNews(containerId, articles) {
@@ -27,7 +20,7 @@ function renderNews(containerId, articles) {
     div.innerHTML = `
       <h3>${article.title}</h3>
       <p>${article.pubDate}</p>
-      <a href="${article.link}" target="_blank" style="color:#22c55e;">Read more</a>
+      <a href="${article.link}" target="_blank" rel="noopener noreferrer" style="color:#22c55e;">Read more</a>
     `;
 
     container.appendChild(div);
@@ -36,16 +29,29 @@ function renderNews(containerId, articles) {
 
 async function loadNews() {
   try {
-    const nflFeed = "https://www.espn.com/espn/rss/nfl/news";
-    const collegeFeed = "https://www.espn.com/espn/rss/ncf/news";
-
-    const nflNews = await fetchNews(nflFeed);
-    const collegeNews = await fetchNews(collegeFeed);
+    const [nflNews, collegeNews] = await Promise.all([
+      fetchNews("nfl"),
+      fetchNews("college")
+    ]);
 
     renderNews("nfl-news", nflNews);
     renderNews("college-news", collegeNews);
   } catch (error) {
     console.error("Error loading news:", error);
+
+    document.getElementById("nfl-news").innerHTML = `
+      <div class="card">
+        <h3>Unable to load NFL news</h3>
+        <p>Please try again in a minute.</p>
+      </div>
+    `;
+
+    document.getElementById("college-news").innerHTML = `
+      <div class="card">
+        <h3>Unable to load college football news</h3>
+        <p>Please try again in a minute.</p>
+      </div>
+    `;
   }
 }
 
