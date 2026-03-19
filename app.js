@@ -18,7 +18,8 @@ function renderNews(containerId, articles) {
     div.className = "card";
 
     div.innerHTML = `
-      ${article.image ? `<img src="${article.image}" style="width:100%; height:140px; object-fit:cover; border-radius:10px; margin-bottom:12px;" />` : ""}
+      <img src="${article.image || 'https://images.unsplash.com/photo-1517649763962-0c623066013b'}"
+           style="width:100%; height:140px; object-fit:cover; border-radius:10px; margin-bottom:12px;" />
     
       <h3>${article.title}</h3>
       <p>${article.pubDate}</p>
