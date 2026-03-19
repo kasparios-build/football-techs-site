@@ -28,6 +28,7 @@ export async function onRequestGet(context) {
 
     const xmlText = await feedResponse.text();
 
+    console.log(xmlText.slice(0, 3000));
     const items = [...xmlText.matchAll(/<item>([\s\S]*?)<\/item>/g)]
       .slice(0, 6)
       .map(match => {
