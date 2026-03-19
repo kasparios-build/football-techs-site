@@ -4,7 +4,16 @@ async function fetchNews(feedUrl) {
   const res = await fetch(api);
   const data = await res.json();
 
-  return data.items.slice(0, 6);
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(data.contents, "text/xml");
+
+  const items = [...xml.querySelectorAll("item")].slice(0, 6);
+
+  return items.map(item => ({
+    title: item.querySelector("title").textContent,
+    link: item.querySelector("link").textContent,
+    pubDate: item.querySelector("pubDate").textContent
+  }));
 }
 
 function renderNews(containerId, articles) {
